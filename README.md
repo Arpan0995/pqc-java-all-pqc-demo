@@ -67,6 +67,16 @@ During a sample run on a laptop (Java 17, Bouncy Castle 1.81), the following o
 * **Transition**: Modern systems will likely adopt **hybrid** handshakes—combining traditional RSA/ECC with PQC—to ensure interoperability. Libraries such as OpenSSL already support such hybrids. During the transition, careful planning is needed to handle certificate chains, protocol negotiation and hardware security modules.
 * **Symmetric crypto remains**: Algorithms like AES and SHA‑2 remain secure if key lengths are doubled. PQC primarily replaces asymmetric primitives for key exchange and signatures.
 
+
+## Side-by-side comparison: PQC vs classical algorithms
+| Property | PQC examples (ML-KEM, ML-DSA, SLH-DSA) | Classical examples (AES-GCM, RSA-2048, DES) |
+| --- | --- | --- |
+| Key sizes (public/private) | ML-KEM-768 pk/sk ~1184/2400 B; ML-DSA-65 pk/sk ~1952/4032 B; SLH-DSA pk ~32 B | AES-256 key 32 B; RSA-2048 key ~256 B; DES key 7 B (insecure) |
+| Ciphertext / signature sizes | ML-KEM-768 ciphertext ~1088 B; ML-DSA signature ~3309 B; SLH-DSA signature ~7856 B | AES-GCM ciphertext ~plaintext + 16 B tag; RSA-PSS signature ~256 B; DES blocks 8 B |
+| Performance (ops) | Encapsulation/decapsulation ~1-2 ms; ML-DSA sign/verify <5 ms; SLH-DSA slower | AES-GCM encrypt/decrypt <1 ms; RSA-2048 ops slower; DES deprecated |
+| Quantum resilience | Designed to resist Shor and Grover; quantum-safe | RSA and DES broken by quantum; AES remains safe if key length doubled |
+| Deployment & maturity | New NIST standards (2024); larger keys require protocol updates; library/hardware support emerging | Decades of use; widely deployed; mature hardware and software support |
+ 
 ## References
 
 * NIST FIPS 203 (ML‑KEM)
@@ -76,3 +86,4 @@ During a sample run on a laptop (Java 17, Bouncy Castle 1.81), the following o
 * Bouncy Castle 1.81 release notes
 
 This project is for educational and experimental purposes. It should not be used as‑is in production without a thorough security review and updates to depend on the latest PQC standards and provider releases.
+
